@@ -1,8 +1,9 @@
 //admin is to access data in firebase
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
-const createUser = require('create_user');
-const serviceAccount = require('service_account.json');
+const createUser = require('./create_user');
+const serviceAccount = require('./service_account.json');
+
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: "https://servify-716c6.firebaseio.com"
