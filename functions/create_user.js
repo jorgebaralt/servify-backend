@@ -1,3 +1,16 @@
+const admin = require('firebase-admin');
 module.exports = function(req,res){
-    res.send(req.body);
+    
+    const displayName = req.body.firstName + " " + req.body.lastName;
+
+    admin.auth().createUser({
+        uid: req.body.email,
+        email: req.body.email,
+        password: req.body.password,
+        displayName: displayName
+      }).then((user)=>{
+        return res.send(user);
+    }).catch((error)=>{
+        res.send("Error Creating User");
+    })
 };
