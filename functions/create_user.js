@@ -11,6 +11,6 @@ module.exports = function(req,res){
       }).then((user)=>{
         return res.send(user);
     }).catch((error)=>{
-        res.send("Error Creating User");
+        res.status(422).send({error:error});
     })
 };
