@@ -1,6 +1,6 @@
 const admin = require('firebase-admin');
+
 module.exports = function(req,res){
-    
     const displayName = req.body.firstName + " " + req.body.lastName;
 
     admin.auth().createUser({
@@ -12,5 +12,5 @@ module.exports = function(req,res){
         return res.send(user);
     }).catch((error)=>{
         res.status(422).send({error:error});
-    })
+    });
 };
