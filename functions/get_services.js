@@ -2,15 +2,23 @@ const admin = require('firebase-admin');
 
 module.exports = function(req,res){
     const db = admin.firestore();
+    // return res.send(req.params);
+    // const params = req.url.split('/');
+    // const category = params[1];
+    // const subcategory = params[2];
 
-    //get all services for specific category
-    if(req.query.category){
-        db.collection('services').where('category', '==',req.query.category).get()
-            .then(snapshot => {
-                return res.send(snapshot);
-            }).catch(error =>{
-                return res.status(422).send(error)
-            })
-    }
-    
+    var query = db.collection('services').get().then(console.log('worked'))
+
+    // //get all services for specific category
+    // if(subcategory){
+
+    //     db.collection('services').get()
+    //         .then(snapshot => {
+    //             res.send(snapshot);
+    //         })
+    //         .catch(error =>{
+    //         });
+    // } else if(category){
+    //     // console.log('just category');
+    // }
 };
