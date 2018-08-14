@@ -7,7 +7,7 @@ module.exports = function(req,res){
     // const category = params[1];
     // const subcategory = params[2];
 
-    var query = db.collection('services').get().then(console.log('worked'))
+    var query = db.collection('services').get().then(result => {console.log(result)});
 
     // //get all services for specific category
     // if(subcategory){
