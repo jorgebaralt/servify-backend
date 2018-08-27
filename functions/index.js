@@ -5,6 +5,7 @@ const serviceAccount = require('./service_account.json');
 const createUser = require('./create_user');
 const postService = require('./post_service');
 const getServices = require ('./get_services');
+const addUserdb = require('./add_user_db');
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -18,3 +19,4 @@ admin.initializeApp({
 exports.createUser = functions.https.onRequest(createUser);
 exports.postService = functions.https.onRequest(postService);
 exports.getServices = functions.https.onRequest(getServices);
+exports.addUserdb = functions.https.onRequest(addUserdb);
