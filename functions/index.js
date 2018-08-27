@@ -6,6 +6,8 @@ const createUser = require('./create_user');
 const postService = require('./post_service');
 const getServices = require ('./get_services');
 const addUserdb = require('./add_user_db');
+const getFavorite = require('./get_favorite');
+const updateFavorite = require('./update_favorite');
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -20,3 +22,5 @@ exports.createUser = functions.https.onRequest(createUser);
 exports.postService = functions.https.onRequest(postService);
 exports.getServices = functions.https.onRequest(getServices);
 exports.addUserdb = functions.https.onRequest(addUserdb);
+exports.getFavorite = functions.https.onRequest(getFavorite);
+exports.updateFavorite = functions.https.onRequest(updateFavorite);
