@@ -6,7 +6,7 @@ module.exports = function(req,res){
     const favArray = req.body.favorites
 
     db.collection('users').doc(email).update({
-        favories: favArray
+        favorites: favArray
     }).then((result) => {
         res.send(result);
     }).catch((error)=>{
