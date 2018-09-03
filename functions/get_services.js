@@ -2,24 +2,26 @@ const admin = require('firebase-admin');
 
 module.exports = function(req,res){
     const db = admin.firestore();
-    const params = req.url.split('/');
-    const category = params[1];
-    const subcategory = params[2];
+    const category = req.query.category
+    const subcategory = req.query.subcategory;
+    const email = req.query.email;
     let field,value = '';
 
-    // decide category or subcategory
     if(subcategory){
-        field = 'subcategory'
-        value = subcategory
+        field = 'subcategory';
+        value = subcategory;
     } else if (category){
-        field = 'category'
-        value = category
+        field = 'category';
+        value = category;
+    } else if (email){
+        field = 'email';
+        value = email;
     } else {
         return res.status(422).send({ error: 'nothing to query' });
     }
 
     /*
-        get services for specific category/subcategory
+        get services for specific category/subcategory/email
         take snapshot data, and put it into array
         then return it
     */
