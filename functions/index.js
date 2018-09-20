@@ -9,6 +9,7 @@ const addUserdb = require('./add_user_db');
 const getFavorite = require('./get_favorite');
 const updateFavorite = require('./update_favorite');
 const getServicesCount = require('./get_services_count');
+const postFeedback = require('./post_feedback');
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -26,3 +27,4 @@ exports.addUserdb = functions.https.onRequest(addUserdb);
 exports.getFavorite = functions.https.onRequest(getFavorite);
 exports.updateFavorite = functions.https.onRequest(updateFavorite);
 exports.getServicesCount = functions.https.onRequest(getServicesCount);
+exports.postFeedback = functions.https.onRequest(postFeedback);
