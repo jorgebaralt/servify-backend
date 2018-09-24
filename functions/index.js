@@ -10,6 +10,7 @@ const getFavorite = require('./get_favorite');
 const updateFavorite = require('./update_favorite');
 const getServicesCount = require('./get_services_count');
 const postFeedback = require('./post_feedback');
+const deleteService = require('./delete_service');
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -28,3 +29,4 @@ exports.getFavorite = functions.https.onRequest(getFavorite);
 exports.updateFavorite = functions.https.onRequest(updateFavorite);
 exports.getServicesCount = functions.https.onRequest(getServicesCount);
 exports.postFeedback = functions.https.onRequest(postFeedback);
+exports.deleteService = functions.https.onRequest(deleteService);
