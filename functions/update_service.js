@@ -6,8 +6,15 @@ module.exports = function(req, res) {
 	const category = updatedService.category;
 	const subcategory = updatedService.subcategory;
 	const FieldValue = admin.firestore.FieldValue;
+	const Geopoint = admin.firestore.GeoPoint;
+
 	let field, value = '';
+
 	updatedService.timestamp = FieldValue.serverTimestamp();
+	updatedService.location = new Geopoint(
+		updatedService.geolocation.latitude,
+		updatedService.geolocation.longitude
+	);
 
 	if (subcategory) {
 		field = 'subcategory';
@@ -22,11 +29,13 @@ module.exports = function(req, res) {
 		.where(field, '==', value)
 		.get()
 		.then((snapshot) => {
-			snapshot.forEach(doc => {
-				doc.ref.set(updatedService)
-					.then(result => {
+			snapshot.forEach((doc) => {
+				doc.ref
+					.set(updatedService)
+					.then((result) => {
 						return res.send(result);
-					}).catch(error => {
+					})
+					.catch((error) => {
 						res.status(422).send({ error: error });
 					});
 			});
