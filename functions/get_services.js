@@ -33,9 +33,9 @@ module.exports = function(req,res){
     db.collection('services').where(field,'==',value).get()
         .then(snapshot => {
             var query = [];
-            snapshot.forEach( doc => {
+            snapshot.forEach(doc => {
                 query.push(doc.data());
-            })
+            });
             return res.send(query);
         }).catch(error => {
             res.status(422).send({ error: error });

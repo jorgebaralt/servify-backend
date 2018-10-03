@@ -12,6 +12,7 @@ const getServicesCount = require('./get_services_count');
 const postFeedback = require('./post_feedback');
 const deleteService = require('./delete_service');
 const updateService = require('./update_service');
+const getNearService = require('./get_near_services');
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -32,3 +33,4 @@ exports.getServicesCount = functions.https.onRequest(getServicesCount);
 exports.postFeedback = functions.https.onRequest(postFeedback);
 exports.deleteService = functions.https.onRequest(deleteService);
 exports.updateService = functions.https.onRequest(updateService);
+exports.getNearService = functions.https.onRequest(getNearService);
