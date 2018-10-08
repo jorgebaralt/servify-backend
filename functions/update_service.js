@@ -2,13 +2,16 @@ const admin = require('firebase-admin');
 
 module.exports = function(req, res) {
 	const db = admin.firestore();
-	const updatedService = req.body;
-	const category = updatedService.category;
-	const subcategory = updatedService.subcategory;
-	const FieldValue = admin.firestore.FieldValue;
 	const Geopoint = admin.firestore.GeoPoint;
+	const FieldValue = admin.firestore.FieldValue;
+	const updatedService = req.body;
+	const email = updatedService.email;
+	const category = updatedService.category;
+	let subcategory = '';
 
-	let field, value = '';
+	if (updatedService.subcategory) {
+		subcategory = updatedService.subcategory;
+	}
 
 	updatedService.timestamp = FieldValue.serverTimestamp();
 	updatedService.location = new Geopoint(
@@ -16,31 +19,12 @@ module.exports = function(req, res) {
 		updatedService.geolocation.longitude
 	);
 
-	if (subcategory) {
-		field = 'subcategory';
-		value = subcategory;
-	} else if (category) {
-		field = 'category';
-		value = category;
-	}
-
-	db.collection('services')
-		.where('email', '==', updatedService.email)
-		.where(field, '==', value)
-		.get()
-		.then((snapshot) => {
-			snapshot.forEach((doc) => {
-				doc.ref
-					.set(updatedService)
-					.then((result) => {
-						return res.send(result);
-					})
-					.catch((error) => {
-						res.status(422).send({ error: error });
-					});
-			});
+	const documentName = email + '_' + category + '_' + subcategory;
+	db.collection('services').doc(documentName).set(updatedService)
+		.then((result) => {
+			return res.send(result);
 		})
 		.catch((error) => {
-			res.status(422).send(error);
+			res.status(422).send({ error: error });
 		});
 };

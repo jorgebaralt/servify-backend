@@ -2,33 +2,21 @@ const admin = require('firebase-admin');
 
 module.exports = function (req, res) {
 	const db = admin.firestore();
-	const category = req.query.category
-	const subcategory = req.query.subcategory;
-	const email = req.query.email;
-	let field, value = '';
 
-	if (subcategory) {
-		field = 'subcategory';
-		value = subcategory;
-	} else if (category) {
-		field = 'category';
-		value = category;
-	} 
+	const service = req.body;
+	let subcategory = '';
 
-	db.collection('services')
-		.where('email', '==', email)
-		.where(field, '==', value)
-		.get()
-		.then(snapshot => {
-			snapshot.forEach(doc => {
-				doc.ref.delete()
-					.then(result => {
-						return res.send(result);
-					}).catch(error => {
-						res.status(422).send({ error: error });
-					});
-			});
+	if (service.subcategory) {
+		subcategory = service.subcategory;
+	}
+
+	const docName = service.email + '_' + service.category + '_' + subcategory;
+
+	db.collection('services').doc(docName).delete()
+		.then(result => {
+			return res.send(result);
 		}).catch(error => {
-			return res.status(422).send(error);
+			res.status(422).send({ error: error });
 		});
+	
 }
