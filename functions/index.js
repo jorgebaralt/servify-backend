@@ -14,6 +14,7 @@ const deleteService = require('./delete_service');
 const updateService = require('./update_service');
 const getNearService = require('./get_near_services');
 const postRating = require('./post_rating');
+const getRatings = require('./get_ratings');
 
 admin.initializeApp({
 	credential: admin.credential.cert(serviceAccount),
@@ -36,3 +37,4 @@ exports.deleteService = functions.https.onRequest(deleteService);
 exports.updateService = functions.https.onRequest(updateService);
 exports.getNearService = functions.https.onRequest(getNearService);
 exports.postRating = functions.https.onRequest(postRating);
+exports.getRatings = functions.https.onRequest(getRatings);

@@ -6,7 +6,7 @@ module.exports = function (req, res) {
 	const data = req.body;
 	const service = data.service;
 	const review = data.review;
-	let subcategory;
+	let subcategory = '';
 	if (service.subcategory) {
 		subcategory = service.subcategory;
 	}

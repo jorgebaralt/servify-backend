@@ -1,13 +1,14 @@
 const admin = require('firebase-admin');
 
-module.exports = function(req,res){
+module.exports = function (req, res){
     const db = admin.firestore();
-    const category = req.query.category
+    const category = req.query.category;
     const subcategory = req.query.subcategory;
     const email = req.query.email;
     const zipCode = req.query.zipCode;
     
-    let field,value = '';
+    let field = '';      
+    let value = '';
 
     if(subcategory){
         field = 'subcategory';
@@ -30,14 +31,15 @@ module.exports = function(req,res){
         take snapshot data, and put it into array
         then return it
     */
-    db.collection('services').where(field,'==',value).get()
+    db.collection('services').where(field, '==', value).get()
         .then(snapshot => {
-            var query = [];
+            const query = [];
             snapshot.forEach(doc => {
                 query.push(doc.data());
             });
             return res.send(query);
-        }).catch(error => {
-            res.status(422).send({ error: error });
+        })
+        .catch(error => {
+            res.status(422).send({ error });
         });
 };

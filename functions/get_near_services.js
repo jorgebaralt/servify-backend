@@ -6,8 +6,8 @@ module.exports = function(req, res) {
 	const currentLocation = req.body.currentLocation;
 	const distance = req.body.distance;
 
-	const lat = 0.0144927536231884
-	const lon = 0.0181818181818182
+	const lat = 0.0144927536231884;
+	const lon = 0.0181818181818182;
 
 	let lowerLat = currentLocation.latitude - (lat * distance);
 	let lowerLon = currentLocation.longitude - (lon * distance);
@@ -22,7 +22,7 @@ module.exports = function(req, res) {
 		.where('location', '<=', greaterGeopoint)
 		.get()
 		.then(snapshot => {
-			var query = [];
+			let query = [];
 			snapshot.forEach(doc => {
 				query.push(doc.data());
 			});
