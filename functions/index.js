@@ -1,10 +1,10 @@
-//admin is to access data in firebase
+// admin is to access data in firebase
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
 const serviceAccount = require('./service_account.json');
 const createUser = require('./create_user');
 const postService = require('./post_service');
-const getServices = require ('./get_services');
+const getServices = require('./get_services');
 const addUserdb = require('./add_user_db');
 const getFavorite = require('./get_favorite');
 const updateFavorite = require('./update_favorite');
@@ -13,10 +13,11 @@ const postFeedback = require('./post_feedback');
 const deleteService = require('./delete_service');
 const updateService = require('./update_service');
 const getNearService = require('./get_near_services');
+const postRating = require('./post_rating');
 
 admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://servify-716c6.firebaseio.com"
+	credential: admin.credential.cert(serviceAccount),
+	databaseURL: 'https://servify-716c6.firebaseio.com'
 });
 
 // exports.helloWorld = functions.https.onRequest((request, response) => {
@@ -34,3 +35,4 @@ exports.postFeedback = functions.https.onRequest(postFeedback);
 exports.deleteService = functions.https.onRequest(deleteService);
 exports.updateService = functions.https.onRequest(updateService);
 exports.getNearService = functions.https.onRequest(getNearService);
+exports.postRating = functions.https.onRequest(postRating);

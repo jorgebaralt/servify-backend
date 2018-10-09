@@ -1,6 +1,6 @@
 const admin = require('firebase-admin');
 
-module.exports = function(req, res) {
+module.exports = function (req, res) {
 	const db = admin.firestore();
 	const Geopoint = admin.firestore.GeoPoint;
 	const FieldValue = admin.firestore.FieldValue;
@@ -25,6 +25,6 @@ module.exports = function(req, res) {
 			return res.send(result);
 		})
 		.catch((error) => {
-			res.status(422).send({ error: error });
+			res.status(422).send({ error });
 		});
 };

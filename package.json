@@ -1,0 +1,29 @@
+{
+  "name": "servify-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "firebase-admin": "^5.13.0",
+    "firebase-functions": "^2.0.5",
+    "grpc": "^1.14.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.6.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jorgebaralt/servify-backend.git"
+  },
+  "author": "Jorge Baralt",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jorgebaralt/servify-backend/issues"
+  },
+  "homepage": "https://github.com/jorgebaralt/servify-backend#readme"
+}
