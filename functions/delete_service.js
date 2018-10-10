@@ -15,8 +15,9 @@ module.exports = function (req, res) {
 	db.collection('services').doc(docName).delete()
 		.then(result => {
 			return res.send(result);
-		}).catch(error => {
-			res.status(422).send({ error: error });
+		})
+		.catch(error => {
+			res.status(422).send({ error });
 		});
 	
-}
+};
