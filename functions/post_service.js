@@ -16,6 +16,7 @@ module.exports = function (req, res) {
     newPost.location = new Geopoint(newPost.geolocation.latitude, newPost.geolocation.longitude);
     newPost.ratingCount = 0;
     newPost.ratingSum = 0;
+    newPost.rating = 0;
 
     db.collection('services').doc(documentName).set(newPost)
         .then(result => {

@@ -7,10 +7,12 @@ module.exports = function (req, res) {
 	const service = data.service;
 	const review = data.review;
 	let subcategory = '';
+
 	if (service.subcategory) {
 		subcategory = service.subcategory;
 	}
-	const documentName =		service.email + '_' + service.category + '_' + subcategory;
+	
+	const documentName = service.email + '_' + service.category + '_' + subcategory;
 
 	review.timestamp = FieldValue.serverTimestamp();
 
@@ -30,7 +32,8 @@ module.exports = function (req, res) {
 						.doc(documentName)
 						.update({
 							ratingCount: ratingCount + 1,
-							ratingSum: ratingSum + review.rating
+							ratingSum: ratingSum + review.rating,
+							rating: (ratingSum + review.rating) / (ratingCount + 1)
 						})
 						.then((result) => {
 							return res.send(result);
