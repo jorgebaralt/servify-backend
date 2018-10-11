@@ -17,7 +17,8 @@ module.exports = function (req, res) {
     newPost.ratingCount = 0;
     newPost.ratingSum = 0;
     newPost.rating = 0;
-
+    newPost.favUsers = [];
+    
     db.collection('services').doc(documentName).set(newPost)
         .then(result => {
             return res.send(result);
