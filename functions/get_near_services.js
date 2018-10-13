@@ -1,6 +1,6 @@
 const admin = require('firebase-admin');
 
-module.exports = function(req, res) {
+module.exports = function (req, res) {
 	const db = admin.firestore();
 	const GeoPoint = admin.firestore.GeoPoint;
 	const currentLocation = req.body.currentLocation;
@@ -27,7 +27,8 @@ module.exports = function(req, res) {
 				query.push(doc.data());
 			});
 			return res.send(query);
-		}).catch(error => {
-			res.status(422).send({ error: error });
 		})
+		.catch(error => {
+			res.status(422).send({ error });
+		});
 };
