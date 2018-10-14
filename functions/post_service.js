@@ -20,8 +20,28 @@ module.exports = function (req, res) {
     newPost.favUsers = [];
     
     db.collection('services').doc(documentName).set(newPost)
-        .then(result => {
-            return res.send(result);
+        .then(() => {
+            db.collection('categories').doc(newPost.category).get()
+                .then((doc) => {
+                    let serviceCount = '';
+                    if (!doc.data().servicesCount) {
+                        serviceCount = 1;
+                    } else {
+                        serviceCount = doc.data().servicesCount + 1;
+                    }
+                    db.collection('categories').doc(newPost.category)
+                        .update({
+                            serviceCount
+                        }).then((result) => {
+                            return res.send(result);
+                        })
+                        .catch((e) => {
+                            res.status(422).send(e);
+                        });
+                })
+                .catch(e => {
+                    res.status(422).send({ e });
+                });
         })
         .catch(error => {
         res.status(422).send({ error });
