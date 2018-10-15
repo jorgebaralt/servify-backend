@@ -17,6 +17,7 @@ const postRating = require('./post_rating');
 const getRatings = require('./get_ratings');
 const deleteRating = require('./delete_rating');
 const removeFavorite = require('./remove_favorite');
+const getPopularCategories = require('./get_popular_categories');
 
 admin.initializeApp({
 	credential: admin.credential.cert(serviceAccount),
@@ -42,3 +43,4 @@ exports.postRating = functions.https.onRequest(postRating);
 exports.getRatings = functions.https.onRequest(getRatings);
 exports.deleteRating = functions.https.onRequest(deleteRating);
 exports.removeFavorite = functions.https.onRequest(removeFavorite);
+exports.getPopularCategories = functions.https.onRequest(getPopularCategories);
