@@ -9,10 +9,10 @@ module.exports = function (req, res) {
 	const lat = 0.0144927536231884;
 	const lon = 0.0181818181818182;
 
-	let lowerLat = currentLocation.latitude - (lat * distance);
-	let lowerLon = currentLocation.longitude - (lon * distance);
-	let greaterLat = currentLocation.latitude + (lat * distance);
-	let greaterLon = currentLocation.longitude + (lon * distance);
+	const lowerLat = currentLocation.latitude - (lat * distance);
+	const lowerLon = currentLocation.longitude - (lon * distance);
+	const greaterLat = currentLocation.latitude + (lat * distance);
+	const greaterLon = currentLocation.longitude + (lon * distance);
 
 	const lesserGeopoint = new GeoPoint(lowerLat, lowerLon);
 	const greaterGeopoint = new GeoPoint(greaterLat, greaterLon);
