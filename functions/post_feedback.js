@@ -7,6 +7,6 @@ module.exports = function (req, res) {
 		.then(result => {
 			return res.send(result);
 		}).catch(error => {
-			res.status(422).send({ error: error });
-		})
+			res.status(422).send({ error });
+		});
 };
