@@ -24,10 +24,10 @@ module.exports = function (req, res) {
             db.collection('categories').doc(newPost.category).get()
                 .then((doc) => {
                     let serviceCount = '';
-                    if (!doc.data().servicesCount) {
+                    if (!doc.data().serviceCount) {
                         serviceCount = 1;
                     } else {
-                        serviceCount = doc.data().servicesCount + 1;
+                        serviceCount = doc.data().serviceCount + 1;
                     }
                     db.collection('categories').doc(newPost.category)
                         .update({
