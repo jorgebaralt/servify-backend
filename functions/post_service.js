@@ -8,11 +8,14 @@ module.exports = function (req, res) {
     const email = newPost.email;
     const category = newPost.category;
     let subcategory = '';
+
+    // check if there is subcategory
     if (newPost.subcategory) {
         subcategory = newPost.subcategory;
     }
     const documentName = email + '_' + category + '_' + subcategory;
     newPost.timestamp = FieldValue.serverTimestamp();
+    // location geopoint, so we can compare locations with others.
     newPost.location = new Geopoint(newPost.geolocation.latitude, newPost.geolocation.longitude);
     newPost.ratingCount = 0;
     newPost.ratingSum = 0;
