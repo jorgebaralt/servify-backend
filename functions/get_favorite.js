@@ -2,7 +2,7 @@ const admin = require('firebase-admin');
 
 module.exports = function (req, res){
     const db = admin.firestore();
-    const email = req.body.email;
+    const email = req.query.email;
 
     db.collection('services')
         .where('favUsers', 'array-contains', email)

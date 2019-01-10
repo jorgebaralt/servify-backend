@@ -4,8 +4,8 @@ module.exports = function (req, res) {
 	const db = admin.firestore();
 	const GeoPoint = admin.firestore.GeoPoint;
 	// Get user location (lat and long)
-	const currentLocation = req.body.currentLocation;
-	const distance = req.body.distance;
+	const currentLocation = JSON.parse(req.query.currentLocation);
+	const distance = req.query.distance;
 
 	const lat = 0.0144927536231884;
 	const lon = 0.0181818181818182;
