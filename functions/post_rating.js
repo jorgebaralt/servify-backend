@@ -28,12 +28,17 @@ module.exports = function (req, res) {
 				.then((doc) => {
 					const ratingCount = doc.data().ratingCount;
 					const ratingSum = doc.data().ratingSum;
+					const priceCount = doc.data().priceCount;
+					const priceSum = doc.data().priceSum;
 					db.collection('services')
 						.doc(documentName)
 						.update({
-							ratingCount: ratingCount + 1,
-							ratingSum: ratingSum + review.rating,
-							rating: (ratingSum + review.rating) / (ratingCount + 1)
+							ratingCount: (ratingCount || 0) + 1,
+							ratingSum: (ratingSum || 0) + review.rating,
+							rating: ((ratingSum + review.rating) || review.rating) / ((ratingCount + 1) || 1),
+							priceCount: (priceCount || 0) + 1,
+							priceSum: (priceSum || 0) + review.price,
+							price: ((priceSum + review.price) || review.price) / ((priceCount + 1) || 1)
 						})
 						.then((result) => {
 							return res.send(result);
