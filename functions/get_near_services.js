@@ -2,7 +2,7 @@ const admin = require('firebase-admin');
 const cors = require('cors')({ origin: true });
 
 module.exports = function (req, res) {
-	// return cors(req, res, () => {
+	return cors(req, res, () => {
 		const db = admin.firestore();
 		const GeoPoint = admin.firestore.GeoPoint;
 		// Get user location (lat and long)
@@ -38,5 +38,5 @@ module.exports = function (req, res) {
 			.catch((error) => {
 				res.status(422).send({ error });
 			});
-	// });
+	});
 };
