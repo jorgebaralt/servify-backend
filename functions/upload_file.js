@@ -52,7 +52,7 @@ module.exports = (req, res) => {
 							contentType: uploadData.type
 						}
 					},
-					destination: [folder, date, fileName].join('')
+					destination: [folder, date, '_', fileName].join('')
 				})
 				.then((data) => {
 					const file = bucket.file(data[0].name);
@@ -61,6 +61,7 @@ module.exports = (req, res) => {
 						expires: '03-09-5000'
 					})
 						.then((signedUrls) => {
+							console.log(signedUrls);
 							res.status(200).json({
 								signedUrls
 							});
@@ -71,9 +72,6 @@ module.exports = (req, res) => {
 								error: err
 							});
 						});
-					//   res.status(200).json({
-					//     url: data
-					//   });
 				})
 				.catch((err) => {
 					console.log(err);
