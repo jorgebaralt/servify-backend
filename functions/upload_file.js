@@ -63,7 +63,7 @@ module.exports = (req, res) => {
 						.then((signedUrls) => {
 							console.log(data[0].name);
 							res.status(200).json({
-								signedUrls,
+								url: signedUrls[0],
 								fileName: data[0].name
 							});
 						})
