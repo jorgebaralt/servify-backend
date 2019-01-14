@@ -61,9 +61,10 @@ module.exports = (req, res) => {
 						expires: '03-09-5000'
 					})
 						.then((signedUrls) => {
-							console.log(signedUrls);
+							console.log(data[0].name);
 							res.status(200).json({
-								signedUrls
+								signedUrls,
+								fileName: data[0].name
 							});
 						})
 						.catch((err) => {
