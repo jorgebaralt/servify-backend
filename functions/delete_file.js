@@ -1,43 +1,38 @@
 const { Storage } = require('@google-cloud/storage');
 const cors = require('cors')({ origin: true });
-const JSON = require('circular-json');
-
 const storage = new Storage();
 
 module.exports = (req, res) => {
 	cors(req, res, () => {
-		console.log(req.query);
 		if (req.method !== 'DELETE' || !req.query.fileName) {
 			// Only accept DELETE requests
 			return res.status(500).json({
 				message: 'Not allowed'
 			});
 		}
-		let fileName;
-		let folder = '/service_images';
-		if (req.query.fileName != null) {
-			fileName = req.query.fileName;
+		const bucketName = 'servify-716c6.appspot.com';
+		const fileName = req.query.fileName;
+		if (!req.query.fileName) { 
+			return res.status(500).json({
+				message: 'No file name found in query.'
+			});
 		}
-		if (req.query.folder) {
-			folder = req.query.folder;
-		}
-		const bucketName = 'servify-716c6.appspot.com/service_images';
-        console.log(fileName);
-		const path = [bucketName, folder].join('');
-		console.log(path);
-		return storage
+		return (
+			storage
 			.bucket(bucketName)
 			.file(fileName)
 			.delete()
-            .then((result) => {
-                console.log(result);
-                res.status(200).JSON.stringify({
+            .then(() => {
+                return res.status(200).json({
                     message: 'File deleted successfully.'
                 });
             })
-			.catch((error) => res.status(500).JSON.stringify({
-					error,
+			.catch((error) => {
+				return res.status(500).json({
+					error: error.message,
 					message: 'Something went wrong.'
-				}));
+				});
+			})
+		);
 	});
 };

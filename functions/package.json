@@ -12,6 +12,7 @@
     "@google-cloud/storage": "^2.3.4",
     "busboy": "^0.3.0",
     "child-process-promise": "^2.2.1",
+    "circular-json": "^0.5.9",
     "cors": "^2.8.5",
     "firebase-admin": "^6.0.0",
     "firebase-functions": "^2.0.5",
