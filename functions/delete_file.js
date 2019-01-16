@@ -1,5 +1,6 @@
 const { Storage } = require('@google-cloud/storage');
 const cors = require('cors')({ origin: true });
+const JSON = require('circular-json');
 
 const storage = new Storage();
 
@@ -30,11 +31,11 @@ module.exports = (req, res) => {
 			.delete()
             .then((result) => {
                 console.log(result);
-                res.status(200).json({
-                    message: 'file deleted successfully'
+                res.status(200).JSON.stringify({
+                    message: 'File deleted successfully.'
                 });
             })
-			.catch((error) => res.status(500).json({
+			.catch((error) => res.status(500).JSON.stringify({
 					error,
 					message: 'Something went wrong.'
 				}));
