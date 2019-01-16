@@ -1,15 +1,9 @@
-const os = require('os');
-const path = require('path');
-const spawn = require('child-process-promise').spawn;
-const cors = require('cors')({ origin: true });
-// Body parser to handle incoming form data
-const Busboy = require('busboy');
-// File system package (default node package)
-const fs = require('fs');
-// admin is to access data in firebase
+// Admin is to access data in firebase
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
+// Key
 const serviceAccount = require('./service_account.json');
+// Routes
 const createUser = require('./create_user');
 const postService = require('./post_service');
 const getServices = require('./get_services');
