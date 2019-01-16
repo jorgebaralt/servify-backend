@@ -1,43 +1,42 @@
-const firebase = require('firebase');
+const { Storage } = require('@google-cloud/storage');
 const cors = require('cors')({ origin: true });
-// Body parser to handle incoming form data
 
-// Get a reference to the storage service, which is used to create references in your storage bucket
-const storage = firebase.storage();
-
-// Create a storage reference from our storage service
-const storageRef = storage.ref();
+const storage = new Storage();
 
 module.exports = (req, res) => {
 	cors(req, res, () => {
-		if (req.method !== 'DELETE' || !req.body.fileName) {
+		console.log(req.query);
+		if (req.method !== 'DELETE' || !req.query.fileName) {
 			// Only accept DELETE requests
 			return res.status(500).json({
 				message: 'Not allowed'
 			});
 		}
-        let fileName;
-        let folder = '/service_images/';
-		if (req.body.fileName != null) {
-			fileName = req.body.fileName;
+		let fileName;
+		let folder = '/service_images';
+		if (req.query.fileName != null) {
+			fileName = req.query.fileName;
 		}
-        if (req.body.folder) {
-            folder = req.body.folder;
-        }
-        const path = [folder, fileName].join('');
-		const deleteRef = storageRef.child(path);
-        // Delete the file
-        return deleteRef.delete().then(() => {
-            // File deleted successfully
-            return res.status(200).json({
-                message: 'File deleted successfully.',
-            });
-        }).catch((error) => {
-            // Uh-oh, an error occurred!
-            return res.status(500).json({
-                error,
-                message: 'Something went wrong.',
-            });
-        });
+		if (req.query.folder) {
+			folder = req.query.folder;
+		}
+		const bucketName = 'servify-716c6.appspot.com/service_images';
+        console.log(fileName);
+		const path = [bucketName, folder].join('');
+		console.log(path);
+		return storage
+			.bucket(bucketName)
+			.file(fileName)
+			.delete()
+            .then((result) => {
+                console.log(result);
+                res.status(200).json({
+                    message: 'file deleted successfully'
+                });
+            })
+			.catch((error) => res.status(500).json({
+					error,
+					message: 'Something went wrong.'
+				}));
 	});
 };
