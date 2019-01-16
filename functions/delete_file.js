@@ -1,5 +1,6 @@
 const { Storage } = require('@google-cloud/storage');
 const cors = require('cors')({ origin: true });
+
 const storage = new Storage();
 
 module.exports = (req, res) => {
