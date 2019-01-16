@@ -1,22 +1,11 @@
 const admin = require('firebase-admin');
 const os = require('os');
 const path = require('path');
-const spawn = require('child-process-promise').spawn;
 const cors = require('cors')({ origin: true });
 // Body parser to handle incoming form data
 const Busboy = require('busboy');
 // File system package (default node package)
 const fs = require('fs');
-// Image upload
-
-const serviceAccount = require('./service_account.json');
-
-// admin.initializeApp({
-// 	credential: admin.credential.cert(serviceAccount),
-// 	databaseURL: 'https://servify-716c6.firebaseio.com',
-// 	storageBucket: 'gs://servify-716c6.appspot.com'
-// });
-
 
 module.exports = (req, res) => {
 	cors(req, res, () => {
@@ -61,21 +50,18 @@ module.exports = (req, res) => {
 						expires: '03-09-5000'
 					})
 						.then((signedUrls) => {
-							console.log(data[0].name);
 							res.status(200).json({
 								url: signedUrls[0],
 								fileName: data[0].name
 							});
 						})
 						.catch((err) => {
-							console.log(err);
 							res.status(500).json({
 								error: err
 							});
 						});
 				})
 				.catch((err) => {
-					console.log(err);
 					res.status(500).json({
 						error: err
 					});
