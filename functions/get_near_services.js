@@ -36,6 +36,7 @@ module.exports = function (req, res) {
 				return res.send(query);
 			})
 			.catch((error) => {
+				console.log(error)
 				res.status(422).send({ error });
 			});
 	});
