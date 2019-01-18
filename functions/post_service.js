@@ -14,7 +14,8 @@ module.exports = function (req, res) {
         subcategory = newPost.subcategory;
     }
     const documentName = email + '_' + category + '_' + subcategory;
-    newPost.timestamp = FieldValue.serverTimestamp();
+    // Generates unique ID number in the following format: e.g. "2019-01-18T00:05:21.602Z_8197"
+    newPost._id = [(new Date()).toISOString(), Number(Math.random().toFixed(4) * 9999).toFixed(0).padStart(4, '0')].join('_');
     // location geopoint, so we can compare locations with others.
     newPost.location = new Geopoint(newPost.geolocation.latitude, newPost.geolocation.longitude);
     newPost.ratingCount = 0;
@@ -23,6 +24,7 @@ module.exports = function (req, res) {
     newPost.price = 0;
     newPost.priceCount = 0;
     newPost.priceSum = 0;
+    newPost.timestamp = FieldValue.serverTimestamp();
     newPost.favUsers = [];
     
     db.collection('services').doc(documentName).set(newPost)
@@ -51,5 +53,5 @@ module.exports = function (req, res) {
         })
         .catch(error => {
         res.status(422).send({ error });
-     });
+    });
 };
