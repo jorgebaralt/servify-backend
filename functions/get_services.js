@@ -8,6 +8,7 @@ module.exports = function (req, res) {
         const subcategory = req.query.subcategory;
         const email = req.query.email;
         const zipCode = req.query.zipCode;
+        const id = req.query.id;
     
         let field = '';
         let value = '';
@@ -24,6 +25,9 @@ module.exports = function (req, res) {
         } else if (zipCode) {
             field = 'zipCode';
             value = zipCode;
+        } else if (id) {
+            field = 'id';
+            value = id;
         } else {
             return res.status(422).send({ error: 'nothing to query' });
         }
