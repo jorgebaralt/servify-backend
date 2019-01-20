@@ -12,8 +12,8 @@ module.exports = function (req, res) {
 	if (updatedService.subcategory) {
 		subcategory = updatedService.subcategory;
 	}
-
-	updatedService.timestamp = FieldValue.serverTimestamp();
+	
+	updatedService.lastUpdated = FieldValue.serverTimestamp();
 	updatedService.location = new Geopoint(
 		updatedService.geolocation.latitude,
 		updatedService.geolocation.longitude

@@ -10,7 +10,7 @@ const fs = require('fs');
 module.exports = (req, res) => {
 	cors(req, res, () => {
 		const bucket = admin.storage().bucket();
-		const folder = '/service_images/';
+		const folder = '/profile_images/';
 		if (req.method !== 'POST') {
 			// Only accept POST requests
 			return res.status(500).json({
