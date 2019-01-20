@@ -25,6 +25,7 @@ const padStart = (string, targetLength, padString) => {
 };
 
 module.exports = function (req, res) {
+    const id = [(new Date()).toISOString(), padStart(Number(Math.random().toFixed(4) * 9999).toFixed(0), 4, '0')].join('_');
     const db = admin.firestore();
     const FieldValue = admin.firestore.FieldValue;
     const Geopoint = admin.firestore.GeoPoint;
@@ -50,7 +51,7 @@ module.exports = function (req, res) {
     newPost.priceSum = 0;
     newPost.favUsers = [];
     // Generates unique ID number in the following format: e.g. "2019-01-18T00:05:21.602Z_8197"
-    newPost._id = [(new Date()).toISOString(), padStart(Number(Math.random().toFixed(4) * 9999).toFixed(0), 4, '0')].join('_');
+    newPost.id = id;
 
     db.collection('services').doc(documentName).set(newPost)
         .then(() => {

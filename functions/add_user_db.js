@@ -10,17 +10,17 @@ module.exports = function (req, res) {
 		.get()
 		.then((doc) => {
 			if (!doc.exist) {
-				const creationTime = FieldValue.serverTimestamp();
+				const creationDate = FieldValue.serverTimestamp();
 				db.collection('users')
 					.doc(req.body.email)
 					.set({
 						uid: req.body.uid,
 						email: req.body.email,
 						fullName: req.body.displayName,
-						creationTime,
+						creationDate,
 						provider: req.body.provider,
-						photoURL: req.body.photoURL,
-						emailVerified: req.body.emailVerified
+						emailVerified: req.body.emailVerified,
+						imageInfo: req.body.imageInfo
 					})
 					.then((result) => res.send(result))
 					.catch((error) => {
