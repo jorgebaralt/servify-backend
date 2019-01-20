@@ -26,15 +26,15 @@ module.exports = (req, res) => {
 			.file(fileName)
 			.delete()
 			.then(() => {
+				console.log(req.query.serviceId && req.query.imagesInfo);
 				if (req.query.serviceId && req.query.imagesInfo) {
-					const db = admin.firestore();
-					const field = 'id';
+					const firebase = admin.firestore();
 					const serviceId = req.query.serviceId;
 					const imagesArray = req.query.imagesInfo;
-					const filteredArray = imagesArray.filter( image => {
+					const filteredArray = imagesArray.filter(image => {
 						return image.fileName !== fileName;
 					});
-					const serviceRef = db.collection('services').where(field, '==', serviceId);
+					const serviceRef = firebase.collection('services').doc(serviceId);
 					serviceRef.set({
 						imagesInfo: filteredArray
 					}, { merge: true })
@@ -44,8 +44,9 @@ module.exports = (req, res) => {
 							});
 						})
 						.catch(error => {
-							res.status(422).send({ 
-								error: error.message,
+							console.log(error);
+							res.status(500).send({ 
+								error: JSON.stringify(error),
 								message: 'Something went wrong.'
 							});
 						});
@@ -56,9 +57,12 @@ module.exports = (req, res) => {
 				}
 				
 			})
-			.catch((error) => res.status(500).json({
-					error: error.message,
+			.catch((error) => {
+				console.log(error);
+				res.status(500).json({
+					error: JSON.stringify(error),
 					message: 'Something went wrong.'
-				}));
+				});
+			});
 	});
 };
