@@ -24,6 +24,7 @@ const reportService = require('./report_service');
 const getLocation = require('./get_location');
 const deleteFile = require('./delete_file');
 const uploadFile = require('./upload_file');
+const profileImageUpload = require('./profile_image_upload');
 
 admin.initializeApp({
 	credential: admin.credential.cert(serviceAccount),
@@ -50,7 +51,8 @@ exports.getPopularCategories = functions.https.onRequest(getPopularCategories);
 exports.reportService = functions.https.onRequest(reportService);
 // Location ipInfo
 exports.getLocation = functions.https.onRequest(getLocation);
-// File upload
+// images upload
 exports.uploadFile = functions.https.onRequest(uploadFile);
+exports.profileImageUpload = functions.https.onRequest(profileImageUpload);
 // File delete
 exports.deleteFile = functions.https.onRequest(deleteFile);
