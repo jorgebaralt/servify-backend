@@ -39,6 +39,7 @@ module.exports = function (req, res) {
     }
     const documentName = email + '_' + category + '_' + subcategory;
     newPost.timestamp = FieldValue.serverTimestamp();
+    newPost.lastUpdated = FieldValue.serverTimestamp();
     // location geopoint, so we can compare locations with others.
     newPost.location = new Geopoint(newPost.geolocation.latitude, newPost.geolocation.longitude);
     newPost.ratingCount = 0;
