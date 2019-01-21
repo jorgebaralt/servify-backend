@@ -20,7 +20,8 @@ module.exports = function (req, res) {
 						creationDate,
 						provider: req.body.provider,
 						emailVerified: req.body.emailVerified,
-						imageInfo: req.body.imageInfo
+						imageInfo: req.body.imageInfo ? req.body.imageInfo : null,
+						photoURL: req.body.photoURL ? req.body.photoURL : null
 					})
 					.then((result) => res.send(result))
 					.catch((error) => {

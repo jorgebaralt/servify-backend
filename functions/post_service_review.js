@@ -1,29 +1,20 @@
 const admin = require('firebase-admin');
 
+// required params: object with review and serviceId {review, serviceId}
 module.exports = function (req, res) {
 	const db = admin.firestore();
 	const FieldValue = admin.firestore.FieldValue;
-	const data = req.body;
-	const service = data.service;
-	const review = data.review;
-	let subcategory = '';
-
-	if (service.subcategory) {
-		subcategory = service.subcategory;
-	}
-	
-	const documentName = service.email + '_' + service.category + '_' + subcategory;
+	const review = req.body.review;
+	const serviceId = req.body.serviceId;
 
 	review.timestamp = FieldValue.serverTimestamp();
+	const ref = db.collection('reviews').doc();
+	review.id = ref.id;
 
-	db.collection('services')
-		.doc(documentName)
-		.collection('reviews')
-		.doc(review.reviewerEmail)
-		.set(review)
+	ref.set(review)
 		.then(() => {
 			db.collection('services')
-				.doc(documentName)
+				.doc(serviceId)
 				.get()
 				.then((doc) => {
 					const ratingCount = doc.data().ratingCount;
@@ -31,7 +22,7 @@ module.exports = function (req, res) {
 					const priceCount = doc.data().priceCount;
 					const priceSum = doc.data().priceSum;
 					db.collection('services')
-						.doc(documentName)
+						.doc(serviceId)
 						.update({
 							ratingCount: (ratingCount || 0) + 1,
 							ratingSum: (ratingSum || 0) + review.rating,

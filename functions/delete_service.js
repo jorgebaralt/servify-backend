@@ -1,37 +1,34 @@
 const admin = require('firebase-admin');
 
+// Required params: service object with {id,category}
 module.exports = function (req, res) {
 	const db = admin.firestore();
 
 	const service = req.body;
-	let subcategory = '';
+	const docName = service.id;
 
-	if (service.subcategory) {
-		subcategory = service.subcategory;
-	}
-
-	const docName = service.email + '_' + service.category + '_' + subcategory;
-
-	db.collection('services').doc(docName).delete()
+	db.collection('services')
+		.doc(docName)
+		.delete()
 		.then(() => {
-			db.collection('categories').doc(service.category).get()
+			db.collection('categories')
+				.doc(service.category)
+				.get()
 				.then((doc) => {
 					const serviceCount = doc.data().serviceCount - 1;
-					db.collection('categories').doc(service.category).update({
-						serviceCount
-					}).then((result) => {
-						return res.send(result);
-					})
-						.catch(e => {
-							return res.status(422).send(e);
-						});
+					db.collection('categories')
+						.doc(service.category)
+						.update({
+							serviceCount
+						})
+						.then((result) => res.send(result))
+						.catch((e) => res.status(422).send(e));
 				})
-				.catch(e => {
+				.catch((e) => {
 					res.status(422).send(e);
 				});
 		})
-		.catch(error => {
+		.catch((error) => {
 			res.status(422).send({ error });
 		});
-	
 };

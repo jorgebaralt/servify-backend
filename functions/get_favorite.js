@@ -1,11 +1,12 @@
 const admin = require('firebase-admin');
 
+// required params: {uid}
 module.exports = function (req, res){
     const db = admin.firestore();
-    const email = req.query.email;
+    const uid = req.query.uid;
 
     db.collection('services')
-        .where('favUsers', 'array-contains', email)
+        .where('favUsers', 'array-contains', uid)
         .get()
         .then(snapshot => {
             let query = [];

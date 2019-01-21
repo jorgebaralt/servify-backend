@@ -2,19 +2,15 @@ const admin = require('firebase-admin');
 
 module.exports = function (req, res) {
 	const db = admin.firestore();
-	const email = req.body.email;
-	const service = req.body.service;
-	let subcategory = '';
-	if (service.subcategory) {
-		subcategory = service.subcategory;
-	}
+	const uid = req.body.uid;
+	const serviceid = req.body.id;
 
-	const documentName = service.email + '_' + service.category + '_' + subcategory;
+	// const documentName = service.email + '_' + service.category + '_' + subcategory;
 
 	db.collection('services')
-		.doc(documentName)
+		.doc(serviceid)
 		.update({
-			favUsers: admin.firestore.FieldValue.arrayRemove(email)
+			favUsers: admin.firestore.FieldValue.arrayRemove(uid)
 		})
 		.then((result) => {
 			res.send(result);
