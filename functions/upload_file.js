@@ -8,7 +8,7 @@ const Busboy = require('busboy');
 const fs = require('fs');
 
 module.exports = (req, res) => {
-	cors(req, res, () => {
+	return cors(req, res, () => {
 		const bucket = admin.storage().bucket();
 		const folder = '/service_images/';
 		if (req.method !== 'POST') {
