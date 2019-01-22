@@ -66,13 +66,15 @@ const profileImages = require('./images_profile');
 const review = require('./review');
 const report = require('./report');
 const feedback = require('./feedback');
+const favorites = require('./favorites');
 
 
 // RESTFUL ROUTES
 exports.service = functions.https.onRequest(service);
 exports.services = functions.https.onRequest(services);
-exports['images_service'] = functions.https.onRequest(serviceImages);
-exports['images_profile'] = functions.https.onRequest(profileImages);
+exports.images_service = functions.https.onRequest(serviceImages);
+exports.images_profile = functions.https.onRequest(profileImages);
 exports.review = functions.https.onRequest(review);
 exports.report = functions.https.onRequest(report);
 exports.feedback = functions.https.onRequest(feedback);
+exports.favorites = functions.https.onRequest(favorites);

@@ -30,7 +30,7 @@ module.exports = function (req, res) {
 								.get()
 								.then((userSnapshot) => {
 									let userReview;
-									userSnapshot.forEach(doc => {
+									userSnapshot.forEach((doc) => {
 										userReview = doc.data();
 									});
 									res.status(200).send({
@@ -108,7 +108,6 @@ module.exports = function (req, res) {
 
 			case 'DELETE': {
 				const { review } = req.body;
-
 				return db
 					.collection('reviews')
 					.doc(review.id)
@@ -128,14 +127,12 @@ module.exports = function (req, res) {
 								if (ratingCount - 1 <= 0) {
 									rating = 0;
 								} else {
-									rating =										(ratingSum - review.rating)
-										/ (ratingCount - 1);
+									rating = ((ratingSum - review.rating) / (ratingCount - 1));
 								}
 								if (priceCount - 1 <= 0) {
 									price = 0;
 								} else {
-									price =										(priceSum - review.prive)
-										/ (priceCount - 1);
+									price =	((priceSum - review.price) / (priceCount - 1));
 								}
 
 								db.collection('services')
