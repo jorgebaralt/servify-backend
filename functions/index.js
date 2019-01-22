@@ -32,6 +32,7 @@ admin.initializeApp({
 	storageBucket: 'gs://servify-716c6.appspot.com'
 });
 
+// Old routes
 exports.createUser = functions.https.onRequest(createUser);
 exports.postService = functions.https.onRequest(postService);
 exports.getServices = functions.https.onRequest(getServices);
@@ -60,12 +61,15 @@ exports.deleteFile = functions.https.onRequest(deleteFile);
 
 // RESTFUL ROUTES
 const service = require('./service');
+const services = require('./services');
 const serviceImages = require('./images_service');
 const profileImages = require('./images_profile');
 const review = require('./review');
 
+
 // RESTFUL ROUTES
 exports.service = functions.https.onRequest(service);
+exports.services = functions.https.onRequest(services);
 exports['images_service'] = functions.https.onRequest(serviceImages);
 exports['images_profile'] = functions.https.onRequest(profileImages);
 exports.review = functions.https.onRequest(review);
