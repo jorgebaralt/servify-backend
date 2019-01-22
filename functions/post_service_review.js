@@ -4,8 +4,7 @@ const admin = require('firebase-admin');
 module.exports = function (req, res) {
 	const db = admin.firestore();
 	const FieldValue = admin.firestore.FieldValue;
-	const review = req.body.review;
-	const serviceId = req.body.serviceId;
+	const { review, serviceId } = req.body;
 
 	review.timestamp = FieldValue.serverTimestamp();
 	const ref = db.collection('reviews').doc();

@@ -3,26 +3,14 @@ const admin = require('firebase-admin');
 module.exports = function (req, res) {
 	const db = admin.firestore();
 
-	const data = req.body;
-	const service = data.service;
-	const review = data.review;
+	const { review } = req.body;
 
-	let subcategory = '';
-
-	if (service.subcategory) {
-		subcategory = service.subcategory;
-	}
-
-	const documentName = service.email + '_' + service.category + '_' + subcategory;
-
-	db.collection('services')
-		.doc(documentName)
-		.collection('reviews')
-		.doc(review.reviewerEmail)
+	db.collection('reviews')
+		.doc(review.id)
 		.delete()
 		.then(() => {
 			db.collection('services')
-				.doc(documentName)
+				.doc(review.serviceId)
 				.get()
 				.then((doc) => {
 					const ratingCount = doc.data().ratingCount;
@@ -31,25 +19,26 @@ module.exports = function (req, res) {
 					const priceSum = doc.data().priceSum;
 					let price;
 					let rating;
+					// Avoid errors and going negative
 					if (ratingCount - 1 <= 0) {
 						rating = 0;
 					} else {
 						rating = (ratingSum - review.rating) / (ratingCount - 1);
 					}
-					if ((priceCount || 0) - 1 <= 0) {
+					if (priceCount - 1 <= 0) {
 						price = 0;
 					} else {
-						price = ((priceSum - price.rating) || 0) / ((priceCount - 1) || 1);
+						price = (priceSum - review.prive) / (priceCount - 1);
 					}
 						
 					db.collection('services')
-						.doc(documentName)
+						.doc(review.serviceId)
 						.update({
 							ratingCount: ratingCount - 1,
 							ratingSum: ratingSum - review.rating,
 							rating,
-							priceCount: (priceCount - 1) || 0,
-							priceSum: ((priceSum - review.price) || 0),
+							priceCount: priceCount - 1,
+							priceSum: priceSum - review.price,
 							price
 						})
 						.then((result) => {

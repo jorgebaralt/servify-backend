@@ -62,8 +62,10 @@ exports.deleteFile = functions.https.onRequest(deleteFile);
 const service = require('./service');
 const serviceImages = require('./images_service');
 const profileImages = require('./images_profile');
+const review = require('./review');
 
 // RESTFUL ROUTES
 exports.service = functions.https.onRequest(service);
 exports['images_service'] = functions.https.onRequest(serviceImages);
 exports['images_profile'] = functions.https.onRequest(profileImages);
+exports.review = functions.https.onRequest(review);

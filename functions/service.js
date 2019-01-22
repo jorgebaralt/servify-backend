@@ -3,14 +3,14 @@ const cors = require('cors')({ origin: true });
 
 module.exports = function (req, res) {
 	return cors(req, res, () => {
-        const firestore = admin.firestore();
+        const db = admin.firestore();
         switch (req.method) {
             /**
              * GET requests.
              */
             case 'GET': {
                 const { serviceId } = req.query;
-                const serviceRef = firestore.collection('services').doc(serviceId);
+                const serviceRef = db.collection('services').doc(serviceId);
                 // Update the document with the new data by merging.
                 return serviceRef.get().then((doc) => {
                         // Protection against null data just in case. If it exists, 
@@ -52,12 +52,12 @@ module.exports = function (req, res) {
                 newPost.favUsers = [];
 
                 // Firestore generates new id if executing doc() with no arguments.
-                const serviceRef = firestore.collection('services').doc();
+                const serviceRef = db.collection('services').doc();
                 newPost.id = serviceRef.id;
                 // Setting the new service
                 return serviceRef.set(newPost)
                     .then(() => {
-                        firestore.collection('categories').doc(newPost.category).get()
+                        db.collection('categories').doc(newPost.category).get()
                             .then((doc) => {
                                 let serviceCount = '';
                                 // Increasing the service count of the posted service's category.
@@ -67,7 +67,7 @@ module.exports = function (req, res) {
                                     serviceCount = doc.data().serviceCount + 1;
                                 }
                                 // Updating firestore
-                                firestore.collection('categories').doc(newPost.category)
+                                db.collection('categories').doc(newPost.category)
                                     .update({
                                         serviceCount
                                     }).then(() => {
@@ -104,7 +104,7 @@ module.exports = function (req, res) {
                         updatedService.geolocation.longitude
                     );
                 }
-                const serviceRef = firestore.collection('services').doc(serviceId);
+                const serviceRef = db.collection('services').doc(serviceId);
                 // Update the document with the new data by merging.
                 return serviceRef.set(updatedService, { merge: true })
                     .then(() => {
@@ -134,15 +134,15 @@ module.exports = function (req, res) {
             case 'DELETE': {
                 const { deletedService } = req.body;
                 const serviceId = deletedService.id;
-                const serviceRef = firestore.collection('services').doc(serviceId);
+                const serviceRef = db.collection('services').doc(serviceId);
                 return serviceRef.delete()
                     .then(() => {
-                        firestore.collection('categories')
+                        db.collection('categories')
                             .doc(deletedService.category)
                             .get()
                             .then((doc) => {
                                 const serviceCount = doc.data().serviceCount - 1;
-                                firestore.collection('categories')
+                                db.collection('categories')
                                     .doc(deletedService.category)
                                     .update({
                                         serviceCount

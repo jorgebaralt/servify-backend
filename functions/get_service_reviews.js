@@ -5,7 +5,7 @@ const cors = require('cors')({ origin: true });
 module.exports = function (req, res) {
 	return cors(req, res, () => {
 		const db = admin.firestore();
-		const serviceId = req.query.serviceId;
+		const { serviceId } = req.query;
 		db.collection('reviews')
 			.where('serviceId', '==', serviceId)
 			.get()
