@@ -96,6 +96,8 @@ module.exports = function (req, res) {
                 updatedService.lastUpdated = FieldValue.serverTimestamp();
                 // Pointer protection
                 if (updatedService.geolocation) {
+                    // Geopoint constructor returns coordinates to calculate points between services,
+                    // and current location of user to fetch close services and such
                     const Geopoint = admin.firestore.GeoPoint;
                     updatedService.location = new Geopoint(
                         updatedService.geolocation.latitude,
