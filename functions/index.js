@@ -56,3 +56,14 @@ exports.uploadFile = functions.https.onRequest(uploadFile);
 exports.profileImageUpload = functions.https.onRequest(profileImageUpload);
 // File delete
 exports.deleteFile = functions.https.onRequest(deleteFile);
+
+
+// RESTFUL ROUTES
+const service = require('./service');
+const serviceImages = require('./images_service');
+const profileImages = require('./images_profile');
+
+// RESTFUL ROUTES
+exports.service = functions.https.onRequest(service);
+exports['images_service'] = functions.https.onRequest(serviceImages);
+exports['images_profile'] = functions.https.onRequest(profileImages);
