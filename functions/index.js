@@ -4,7 +4,7 @@ const functions = require('firebase-functions');
 // Key
 const serviceAccount = require('./service_account.json');
 // Routes
-const createUser = require('./create_user');
+
 const postService = require('./post_service');
 const getServices = require('./get_services');
 const addUserdb = require('./add_user_db');
@@ -32,7 +32,7 @@ admin.initializeApp({
 });
 
 // Old routes
-exports.createUser = functions.https.onRequest(createUser);
+
 exports.postService = functions.https.onRequest(postService);
 exports.getServices = functions.https.onRequest(getServices);
 exports.addUserdb = functions.https.onRequest(addUserdb);
@@ -67,6 +67,8 @@ const review = require('./review');
 const report = require('./report');
 const feedback = require('./feedback');
 const favorites = require('./favorites');
+const auth = require('./auth');
+const user = require('./user');
 
 
 // RESTFUL ROUTES
@@ -78,3 +80,5 @@ exports.review = functions.https.onRequest(review);
 exports.report = functions.https.onRequest(report);
 exports.feedback = functions.https.onRequest(feedback);
 exports.favorites = functions.https.onRequest(favorites);
+exports.auth = functions.https.onRequest(auth);
+exports.user = functions.https.onRequest(user);
