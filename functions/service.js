@@ -130,7 +130,8 @@ module.exports = function (req, res) {
              * DELETE requests.
              */ 
             case 'DELETE': {
-                const { serviceId, deletedService } = req.body;
+                const { deletedService } = req.body;
+                const serviceId = deletedService.id;
                 const serviceRef = firestore.collection('services').doc(serviceId);
                 return serviceRef.delete()
                     .then(() => {
