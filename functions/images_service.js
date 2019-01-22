@@ -94,6 +94,7 @@ module.exports = (req, res) => {
                         // the function returns the updated document.
                         if (doc.exists) {
 							console.log("Document data:", doc.data());
+							const serviceData = doc.data();
 							const imagesArray = doc.data().imagesInfo;
 							storage
 								.bucket(bucketName)
@@ -107,9 +108,9 @@ module.exports = (req, res) => {
 										imagesInfo: filteredArray
 									}, { merge: true })
 										.then(() => {
-											res.status(200).json({
-												message: 'File deleted successfully.'
-											});
+											// Updating the imagesInfo data before sending it.
+											serviceData.imagesInfo = filteredArray;
+											res.status(200).json(serviceData);
 										})
 										.catch(error => {
 											console.log(error);
