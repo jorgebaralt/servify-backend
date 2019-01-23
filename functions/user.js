@@ -18,7 +18,6 @@ module.exports = function (req, res) {
 
 			case 'POST': {
 				const FieldValue = admin.firestore.FieldValue;
-				console.log(req.body);
 				const { user } = req.body;
 				// check if user already exist
 				return db
