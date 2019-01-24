@@ -37,6 +37,10 @@ module.exports = function (req, res) {
 			case 'POST': {
 				// Body data
 				const newPost = req.body;
+				console.log(newPost); // Firebase log
+				if (!newPost) {
+					res.status(422).send({ error: 'No data was received.' });
+				}
 				// Creation and lastUpdated timestamps
 				const FieldValue = admin.firestore.FieldValue;
 				newPost.timestamp = FieldValue.serverTimestamp();
