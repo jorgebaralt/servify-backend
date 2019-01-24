@@ -48,7 +48,7 @@ module.exports = function (req, res) {
 
 				// location geopoint, so we can compare locations with others.
 				const Geopoint = admin.firestore.GeoPoint;
-				if (!newPost.location) { // Protection
+				if (!newPost.geolocation) { // Protection
 					res.status(422).send({ error: 'No location data was received.' });
 				}
 				newPost.location = new Geopoint(
