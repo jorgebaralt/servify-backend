@@ -65,10 +65,6 @@ module.exports = function (req, res) {
 				newPost.priceSum = 0;
 				newPost.favUsers = [];
 
-				// Firestore generates new id if executing doc() with no arguments.
-				const serviceRef = db.collection('services').doc();
-				newPost.id = serviceRef.id;
-
                 // if subcategory, check that there are no services for this user
                 // we only allow one service per subcategory
 				if (newPost.subcategory) {
@@ -80,6 +76,9 @@ module.exports = function (req, res) {
 						.then((snapshot) => {
                             if (snapshot.empty) {
                                 // if there are not, create the post
+								// Firestore generates new id if executing doc() with no arguments.
+								const serviceRef = db.collection('services').doc();
+								newPost.id = serviceRef.id;
 								return serviceRef
 									.set(newPost)
                                     .then(() => {
@@ -122,8 +121,8 @@ module.exports = function (req, res) {
 										res.status(422).send({ error });
 									});
 							}
-							return res.send({
-								message: 'This account already has a service under this subcategory. Only 1 service per subcategory is allowed.',
+							return res.status(422).send({
+								error: 'This account already has a service under this subcategory. Only 1 service per subcategory is allowed.',
 								type: 'warning'
 							});
 						})
@@ -138,6 +137,9 @@ module.exports = function (req, res) {
 					.get()
 					.then((snapshot) => {
 						if (snapshot.empty) {
+							// Firestore generates new id if executing doc() with no arguments.
+							const serviceRef = db.collection('services').doc();
+							newPost.id = serviceRef.id;
 							return serviceRef
 								.set(newPost)
                                 .then(() => {
@@ -163,9 +165,8 @@ module.exports = function (req, res) {
 													serviceCount
 												})
 												.then(() => res.status(200).send({
-														message:
-															'Service created successfully.',
-														type: 'success'
+														message: 'Service created successfully.',
+														service: newPost
 													}))
 												.catch((error) => {
 													res.status(422).send(error);
@@ -179,9 +180,8 @@ module.exports = function (req, res) {
 									res.status(422).send({ error });
 								});
 						}
-						return res.send({
-							message:
-								'This account already have a Service under this Category, Only 1 service per subcategory is allowed',
+						return res.status(422).send({
+							error: 'This account already has a service under this subcategory. Only 1 service per subcategory is allowed.',
 							type: 'warning'
 						});
 					});
