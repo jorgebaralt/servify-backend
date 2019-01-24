@@ -38,7 +38,7 @@ module.exports = function (req, res) {
 				// Body data
 				const newPost = req.body;
 				console.log(newPost); // Firebase log
-				if (!newPost) {
+				if (!newPost) { // Protection
 					res.status(422).send({ error: 'No data was received.' });
 				}
 				// Creation and lastUpdated timestamps
@@ -48,6 +48,9 @@ module.exports = function (req, res) {
 
 				// location geopoint, so we can compare locations with others.
 				const Geopoint = admin.firestore.GeoPoint;
+				if (!newPost.location) { // Protection
+					res.status(422).send({ error: 'No location data was received.' });
+				}
 				newPost.location = new Geopoint(
 					newPost.geolocation.latitude,
 					newPost.geolocation.longitude
@@ -120,7 +123,7 @@ module.exports = function (req, res) {
 									});
 							}
 							return res.send({
-								message: 'This account already have a Service under this Subcategory, Only 1 service per subcategory is allowed',
+								message: 'This account already has a service under this subcategory. Only 1 service per subcategory is allowed.',
 								type: 'warning'
 							});
 						})
