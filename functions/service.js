@@ -98,8 +98,8 @@ module.exports = function (req, res) {
 														serviceCount
 													})
 													.then(() => res.status(200).send({
-															message:
-																'Service created successfully.'
+															message: 'Service created successfully.',
+															service: newPost
 														}))
 													.catch((error) => {
 														res.status(422).send(
@@ -116,8 +116,7 @@ module.exports = function (req, res) {
 									});
 							}
 							return res.send({
-								message:
-									'This account already have a Service under this Subcategory, Only 1 service per subcategory is allowed',
+								message: 'This account already have a Service under this Subcategory, Only 1 service per subcategory is allowed',
 								type: 'warning'
 							});
 						})
