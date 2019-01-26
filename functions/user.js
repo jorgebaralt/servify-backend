@@ -10,7 +10,19 @@ module.exports = function (req, res) {
 			 * GET requests.
 			 */
 			case 'GET': {
-				break;
+				// Get user by UID
+				const { uid } = req.query;
+				return db.collection('users').doc(uid).get().then(doc => {
+					if (doc.exists) {
+						res.status(200).send(doc.data());
+					} else {
+						// doc.data() will be undefined in this case
+						res.status(200).send('No such document!');
+					}
+				})
+					.catch(e => {
+						res.status(422).send({ e });
+					});
 			}
 
 			/**
