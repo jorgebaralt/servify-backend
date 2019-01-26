@@ -15,7 +15,8 @@ module.exports = function (req, res) {
 					email,
 					zipCode,
 					id,
-					distance
+					distance,
+					uid
 				} = req.query;
 				let currentLocation;
 
@@ -75,6 +76,9 @@ module.exports = function (req, res) {
 				} else if (email) {
 					field = 'email';
 					value = email;
+				} else if (uid) {
+					field = 'uid';
+					value = uid;
 				} else if (zipCode) {
 					field = 'zipCode';
 					value = zipCode;
