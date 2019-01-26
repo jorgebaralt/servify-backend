@@ -1,3 +1,4 @@
+/* eslint-disable object-shorthand */
 const admin = require('firebase-admin');
 const cors = require('cors')({ origin: true });
 
@@ -19,29 +20,34 @@ module.exports = function (req, res) {
 			case 'POST': {
 				const FieldValue = admin.firestore.FieldValue;
 				const { user } = req.body;
+				const {
+					uid,
+					email,
+					displayName,
+					provider,
+					emailVerified,
+					imageInfo,
+					photoURL,
+				} = user;
 				// check if user already exist
 				return db
 					.collection('users')
-					.doc(user.uid)
+					.doc(uid)
 					.get()
 					.then((doc) => {
 						if (!doc.exist) {
 							const creationDate = FieldValue.serverTimestamp();
 							db.collection('users')
-								.doc(user.uid)
+								.doc(uid)
 								.set({
-									uid: user.uid,
-									email: user.email,
-									fullName: user.displayName,
+									uid,
+									email,
+									displayName,
 									creationDate,
-									provider: user.provider,
-									emailVerified: user.emailVerified,
-									imageInfo: user.imageInfo
-										? user.imageInfo
-										: null,
-									photoURL: user.photoURL
-										? user.photoURL
-										: null
+									provider,
+									emailVerified,
+									imageInfo: imageInfo,
+									photoURL: photoURL
 								})
 								.then((result) => res.send(result))
 								.catch((error) => {
