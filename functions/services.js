@@ -9,7 +9,7 @@ module.exports = function (req, res) {
 			 * GET requests.
 			 */
 			case 'GET': {
-				const { category, subcategory, email, zipCode, id } = req.query;
+				const { category, subcategory, email, zipCode, id, uid } = req.query;
 
 				let field = '';
 				let value = '';
@@ -23,6 +23,9 @@ module.exports = function (req, res) {
 				} else if (email) {
 					field = 'email';
 					value = email;
+				} else if (uid) {
+					field = 'uid';
+					value = uid;
 				} else if (zipCode) {
 					field = 'zipCode';
 					value = zipCode;
