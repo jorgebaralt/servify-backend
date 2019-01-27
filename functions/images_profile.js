@@ -9,11 +9,11 @@ const fs = require('fs');
 
 module.exports = (req, res) => {
 	return cors(req, res, () => {
-        const firestore = admin.firestore();
-        switch (req.method) {
-            /**
-             * POST requests.
-             */
+		const firestore = admin.firestore();
+		switch (req.method) {
+			/**
+			 * POST requests.
+			 */
 			case 'POST': {
 				const bucket = admin.storage().bucket();
 				const folder = '/profile_images/';
@@ -26,14 +26,22 @@ module.exports = (req, res) => {
 				const busboy = new Busboy({ headers: req.headers });
 				let uploadData = null;
 				let fileName = '';
-				const date = JSON.stringify(new Date()).replace('"', '').replace('"', '');
+				const date = JSON.stringify(new Date())
+					.replace('"', '')
+					.replace('"', '');
 				// Handling form data
-				busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-					fileName = filename;
-					const filepath = path.join(os.tmpdir(), [date, filename].join('')); // Temporary directory (tmpdir), cleaned up after successfully uploaded
-					uploadData = { file: filepath, type: mimetype };
-					file.pipe(fs.createWriteStream(filepath)); // Stream the file content into a new file
-				});
+				busboy.on(
+					'file',
+					(fieldname, file, filename, encoding, mimetype) => {
+						fileName = filename;
+						const filepath = path.join(
+							os.tmpdir(),
+							[date, filename].join('')
+						); // Temporary directory (tmpdir), cleaned up after successfully uploaded
+						uploadData = { file: filepath, type: mimetype };
+						file.pipe(fs.createWriteStream(filepath)); // Stream the file content into a new file
+					}
+				);
 				busboy.on('finish', () => {
 					bucket
 						.upload(uploadData.file, {
@@ -46,25 +54,25 @@ module.exports = (req, res) => {
 							},
 							destination: [folder, date, '_', fileName].join('')
 						})
-						.then((data) => {
+						.then(data => {
 							const file = bucket.file(data[0].name);
 							file.getSignedUrl({
 								action: 'read',
 								expires: '03-09-5000'
 							})
-								.then((signedUrls) => {
+								.then(signedUrls => {
 									res.status(200).json({
 										url: signedUrls[0],
 										fileName: data[0].name
 									});
 								})
-								.catch((err) => {
+								.catch(err => {
 									res.status(500).json({
 										error: err
 									});
 								});
 						})
-						.catch((err) => {
+						.catch(err => {
 							res.status(500).json({
 								error: err
 							});
@@ -74,60 +82,89 @@ module.exports = (req, res) => {
 				busboy.end(req.rawBody);
 				break;
 			}
-            /**
-             * DELETE requests.
-             */ 
-            case 'DELETE': {
+			/**
+			 * DELETE requests.
+			 */
+
+			case 'DELETE': {
 				if (!req.body) {
 					return res.status(500).json({
-						message: 'File name or user id can\'t be null.'
+						message: "File name or user id can't be null."
 					});
 				}
 				const { Storage } = require('@google-cloud/storage');
 				const storage = new Storage();
 				const bucketName = 'servify-716c6.appspot.com';
-				const { userId, fileName } = req.body;
-				const userRef = firestore.collection('users').doc(userId);
-                // Update the document with the new data by merging.
-                return userRef.get().then((doc) => {
-                        // Protection against null data just in case. If it exists, 
-                        // the function returns the updated document.
-                        if (doc.exists) {
+				const { uid, fileName } = req.body;
+				const userRef = firestore.collection('users').doc(uid);
+				// Update the document with the new data by merging.
+				return userRef
+					.get()
+					.then(doc => {
+						// Protection against null data just in case. If it exists,
+						// the function returns the updated document.
+						if (doc.exists) {
+							// delete image from storage
 							storage
 								.bucket(bucketName)
 								.file(fileName)
 								.delete()
 								.then(() => {
-									userRef.set({
-										photoURL: null
-									}, { merge: true })
+									// delete imageInfo from ref
+									userRef
+										.set(
+											{
+												photoURL: null,
+												imageInfo: null
+											},
+											{ merge: true }
+										)
 										.then(() => {
-											res.status(200).json({
-												message: 'File deleted successfully.'
-											});
+											// delete image from auth photo url
+											admin
+												.auth()
+												.updateUser(uid, {
+													photoURL: null
+												})
+												.then(() => {
+													res.status(200).json({
+														message:
+															'File deleted successfully.'
+													});
+												})
+												.catch(e => {
+													res.status(500).send({
+														error: JSON.stringify(
+															e
+														),
+														message:
+															'Something went wrong.'
+													});
+												});
 										})
 										.catch(error => {
 											console.log(error);
-											res.status(500).send({ 
+											res.status(500).send({
 												error: JSON.stringify(error),
 												message: 'Something went wrong.'
 											});
 										});
 								})
-								.catch((error) => {
+								.catch(error => {
 									console.log(error);
 									res.status(500).json({
 										error: JSON.stringify(error),
 										message: 'Something went wrong.'
 									});
 								});
-                        } else {
-                            // doc.data() will be undefined in this case
-                            res.status(200).send('No such document!');
-                        }
-                    }).catch((error) => {
-                        res.status(422).send({ error });
-                    });
+						} else {
+							// doc.data() will be undefined in this case
+							res.status(200).send('No such document!');
+						}
+					})
+					.catch(error => {
+						res.status(422).send({ error });
+					});
 			}
 			default:
 				return res.status(500).json({
