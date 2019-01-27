@@ -69,6 +69,7 @@ const feedback = require('./feedback');
 const favorites = require('./favorites');
 const auth = require('./auth');
 const user = require('./user');
+const reviews = require('./reviews');
 
 
 // RESTFUL ROUTES
@@ -77,6 +78,7 @@ exports.services = functions.https.onRequest(services);
 exports.images_service = functions.https.onRequest(serviceImages);
 exports.images_profile = functions.https.onRequest(profileImages);
 exports.review = functions.https.onRequest(review);
+exports.reviews = functions.https.onRequest(reviews);
 exports.report = functions.https.onRequest(report);
 exports.feedback = functions.https.onRequest(feedback);
 exports.favorites = functions.https.onRequest(favorites);

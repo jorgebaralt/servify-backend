@@ -6,58 +6,6 @@ module.exports = function (req, res) {
 		const db = admin.firestore();
 		switch (req.method) {
 			/**
-			 * GET requests.
-			 */
-			case 'GET': {
-				const { serviceId, uid } = req.query;
-				// Get current user review, and all reviews except it
-				// and returns them separetly
-				if (uid) {
-					return db
-						.collection('reviews')
-						.where('serviceId', '==', serviceId)
-						.where('uid', '>', uid)
-						.where('uid', '<', uid)
-						.get()
-						.then((snapshot) => {
-							const reviews = [];
-							snapshot.forEach((doc) => {
-								reviews.push(doc.data());
-							});
-							db.collection('reviews')
-								.where('serviceId', '==', serviceId)
-								.where('uid', '==', uid)
-								.get()
-								.then((userSnapshot) => {
-									let userReview;
-									userSnapshot.forEach((doc) => {
-										userReview = doc.data();
-									});
-									res.status(200).send({
-										reviews,
-										userReview
-									});
-								})
-								.catch((e) => res.status(422).send({ e }));
-						})
-						.catch((e) => res.status(422).send({ e }));
-				}
-				// Get all reviews of a service
-				return db
-					.collection('reviews')
-					.where('serviceId', '==', serviceId)
-					.get()
-					.then((snapshot) => {
-						const query = [];
-						snapshot.forEach((doc) => {
-							query.push(doc.data());
-						});
-						return res.send(query);
-					})
-					.catch((e) => res.status(422).send({ e }));
-			}
-
-			/**
 			 * POST requests.
 			 */
 
@@ -78,7 +26,6 @@ module.exports = function (req, res) {
 								review.id = ref.id;
 								return ref.set(review).then(() => {
 									db.collection('services')
-										.collection('services')
 										.doc(serviceId)
 										.get()
 										.then((doc) => {
@@ -103,7 +50,10 @@ module.exports = function (req, res) {
 														/ (priceCount + 1 || 1)
 												})
 												.then((result) => res.send(result))
-												.catch((e) => res.status(422).send(e));
+												.catch((e) => {
+													console.log(e);
+													res.status(422).send(e);
+												});
 										})
 										.catch((error) => {
 											res.status(422).send({ error });
@@ -154,11 +104,11 @@ module.exports = function (req, res) {
 								db.collection('services')
 									.doc(review.serviceId)
 									.update({
-										ratingCount: ratingCount - 1,
-										ratingSum: ratingSum - review.rating,
+										ratingCount: (ratingCount - 1) < 0 ? 0 : (ratingCount - 1),
+										ratingSum: (ratingSum - review.rating) < 0 ? 0 : (ratingSum - review.rating),
 										rating,
-										priceCount: priceCount - 1,
-										priceSum: priceSum - review.price,
+										priceCount: (priceCount - 1) < 0 ? 0 : (priceCount - 1),
+										priceSum: (priceSum - review.price) < 0 ? 0 : (priceSum - review.price),
 										price
 									})
 									.then((result) => res.send(result))
