@@ -10,8 +10,25 @@ module.exports = function (req, res) {
 			 */
 			case 'GET': {
 				const { serviceId, uid } = req.query;
-				// Get current user review, and all reviews except it
-				// and returns them separetly
+				// Gets all of the reviews made by specific user
+				// then returns them.
+				if (uid && !serviceId) {
+					return db.collection('reviews')
+						.where('uid', '==', uid)
+						.get()
+						.then((reviewsSnapshot) => {
+							const reviews = [];
+							reviewsSnapshot.forEach((doc) => {
+								reviews.push(doc.data());
+							});
+							res.status(200).send({
+								reviews,
+							});
+						})
+						.catch((e) => res.status(422).send({ e }));
+				}
+				// Get current user review, and all reviews except the user's,
+				// and returns them separetly.
 				if (uid) {
 					return db
 						.collection('reviews')
