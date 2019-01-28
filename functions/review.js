@@ -49,9 +49,9 @@ module.exports = function (req, res) {
 															|| review.price)
 														/ (priceCount + 1 || 1)
 												})
-												.then((result) => res.send(result))
+												.then(() => res.send(review))
 												.catch((e) => {
-													console.log(e);
+													console.log(e); // Firebase log
 													res.status(422).send(e);
 												});
 										})
@@ -100,8 +100,7 @@ module.exports = function (req, res) {
 								} else {
 									price =	((priceSum - review.price) / (priceCount - 1));
 								}
-
-								db.collection('services')
+								return db.collection('services')
 									.doc(review.serviceId)
 									.update({
 										ratingCount: (ratingCount - 1) < 0 ? 0 : (ratingCount - 1),
@@ -111,7 +110,7 @@ module.exports = function (req, res) {
 										priceSum: (priceSum - review.price) < 0 ? 0 : (priceSum - review.price),
 										price
 									})
-									.then((result) => res.send(result))
+									.then((result) => res.status(422).send(result))
 									.catch((e) => res.status(422).send(e));
 							})
 							.catch((error) => {

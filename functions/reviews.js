@@ -27,35 +27,30 @@ module.exports = function (req, res) {
 						})
 						.catch((e) => res.status(422).send({ e }));
 				}
-				// Get current user review, and all reviews except the user's,
-				// and returns them separetly.
-				if (uid) {
+				// Get current user review of a specific service.
+				if (uid && serviceId) {
 					return db
 						.collection('reviews')
 						.where('serviceId', '==', serviceId)
-						.where('uid', '>', uid)
-						.where('uid', '<', uid)
 						.get()
 						.then((snapshot) => {
-							const reviews = [];
+							const query = [];
 							snapshot.forEach((doc) => {
-								reviews.push(doc.data());
+								query.push(doc.data());
 							});
-							db.collection('reviews')
-								.where('serviceId', '==', serviceId)
-								.where('uid', '==', uid)
-								.get()
-								.then((userSnapshot) => {
-									let userReview;
-									userSnapshot.forEach((doc) => {
-										userReview = doc.data();
-									});
-									res.status(200).send({
-										reviews,
-										userReview
-									});
-								})
-								.catch((e) => res.status(422).send({ e }));
+							// Filtering the user review out of the array.
+							// If there is an user review, then it will be sent as userReview.
+							let userReview;
+							const reviews = query.filter((review) => {
+								if (uid === review.uid) {
+									userReview = review;
+								}
+								return uid !== review.uid;
+							});
+							return res.status(200).send({
+								userReview,
+								reviews
+							});
 						})
 						.catch((e) => res.status(422).send({ e }));
 				}
