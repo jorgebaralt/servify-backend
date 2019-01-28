@@ -86,8 +86,8 @@ module.exports = function (req, res) {
 				return db
 					.collection('users')
 					.doc(uid)
-					.set(updatedUser, { merge: true })
-					.then((doc) => {
+					.update(updatedUser)
+					.then(() => {
 						if (updatedUser.imageInfo != null) {
 							updatedUser.photoURL = updatedUser.imageInfo.url;
 						} else {
@@ -97,9 +97,23 @@ module.exports = function (req, res) {
 						admin
 							.auth()
 							.updateUser(uid, updatedUser)
-							.then(() => {
-								res.send(doc);
-							})
+							.then(() => db
+									.collection('users')
+									.doc(uid)
+									.get()
+									.then((doc) => {
+										if (doc.exists) {
+											res.status(200).send(doc.data());
+										} else {
+											// doc.data() will be undefined in this case
+											res.status(200).send(
+												'No such document!'
+											);
+										}
+									})
+									.catch((e) => {
+										res.status(422).send({ e });
+									}))
 							.catch((e) => res.status(422).send(e));
 					})
 					.catch((e) => {
