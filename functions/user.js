@@ -12,15 +12,19 @@ module.exports = function (req, res) {
 			case 'GET': {
 				// Get user by UID
 				const { uid } = req.query;
-				return db.collection('users').doc(uid).get().then(doc => {
-					if (doc.exists) {
-						res.status(200).send(doc.data());
-					} else {
-						// doc.data() will be undefined in this case
-						res.status(200).send('No such document!');
-					}
-				})
-					.catch(e => {
+				return db
+					.collection('users')
+					.doc(uid)
+					.get()
+					.then((doc) => {
+						if (doc.exists) {
+							res.status(200).send(doc.data());
+						} else {
+							// doc.data() will be undefined in this case
+							res.status(200).send('No such document!');
+						}
+					})
+					.catch((e) => {
 						res.status(422).send({ e });
 					});
 			}
@@ -39,7 +43,7 @@ module.exports = function (req, res) {
 					provider,
 					emailVerified,
 					imageInfo,
-					photoURL,
+					photoURL
 				} = user;
 				// check if user already exist
 				return db
@@ -78,7 +82,30 @@ module.exports = function (req, res) {
 			 */
 
 			case 'PUT': {
-				break;
+				const { updatedUser, uid } = req.body;
+				return db
+					.collection('users')
+					.doc(uid)
+					.set(updatedUser, { merge: true })
+					.then((doc) => {
+						if (updatedUser.imageInfo != null) {
+							updatedUser.photoURL = updatedUser.imageInfo.url;
+						} else {
+							updatedUser.photoURL = null;
+						}
+						delete updatedUser.imageInfo;
+						admin
+							.auth()
+							.updateUser(uid, updatedUser)
+							.then(() => {
+								res.send(doc);
+							})
+							.catch((e) => res.status(422).send(e));
+					})
+					.catch((e) => {
+						console.log(e);
+						res.status(422).send({ e });
+					});
 			}
 
 			/**
