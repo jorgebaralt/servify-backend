@@ -1,6 +1,76 @@
 const admin = require('firebase-admin');
 const cors = require('cors')({ origin: true });
 
+const calculateNewRatings = (oldRatings, review, bIsDelete, bIsPrice) => {
+	// Object keys
+	let average;
+	let	sum;
+	let	count;
+	// Depending on the type of the rating the keys will change. The boolean bIsPrice
+	// determines which type of rating object will be returned.
+	if (bIsPrice) {
+		average = 'price';
+		sum = 'priceSum';
+		count = 'priceCount';
+	} else {
+		average = 'rating';
+		sum = 'ratingSum';
+		count = 'ratingCount';
+	}
+	const ratings = {
+		[average]: oldRatings[average] ? oldRatings[average] : 0,
+		[sum]: oldRatings[sum] ? oldRatings[sum] : 0,
+		[count]: oldRatings[count] ? oldRatings[count] : 0
+	};
+    // If it's delete then the count decreses by 1. Else it will add 1.
+    if (bIsDelete) {
+        ratings[count]--;
+    } else {
+        ratings[count]++;
+    }
+    // If it's a post, then sum. Else it will be a difference between the old sum
+    // and the deleted review's rating.
+    if (bIsDelete) {
+        ratings[sum] -= review[average];
+    } else {
+        ratings[sum] += review[average];
+    }
+    ratings[average] = ( // Average
+        (ratings[sum]) / (ratings[count])
+    );
+    return ratings;
+};
+
+const washRatings = (updatedRatings, bIsPrice) => {
+	// Object keys
+	let average;
+	let	sum;
+	let	count;
+	// Depending on the type of the rating the keys will change. The boolean bIsPrice
+	// determines which type of rating object will be returned.
+	if (bIsPrice) {
+		average = 'price';
+		sum = 'priceSum';
+		count = 'priceCount';
+	} else {
+		average = 'rating';
+		sum = 'ratingSum';
+		count = 'ratingCount';
+	}
+	const ratings = {
+		[average]: updatedRatings[average] ? updatedRatings[average] : 0,
+		[sum]: updatedRatings[sum] ? updatedRatings[sum] : 0,
+		[count]: updatedRatings[count] ? updatedRatings[count] : 0
+	};
+	// Avoid errors and going negative.
+	if (ratings[average] <= 0 || ratings[sum] <= 0 || ratings[count] <= 0) {
+		ratings[average] = 0;
+		ratings[sum] = 0;
+		ratings[count] = 0;
+	}
+	return ratings;
+};
+
 module.exports = function (req, res) {
 	return cors(req, res, () => {
 		const db = admin.firestore();
@@ -29,34 +99,41 @@ module.exports = function (req, res) {
 										.doc(serviceId)
 										.get()
 										.then((doc) => {
-											const ratingCount = doc.data().ratingCount;
-											const ratingSum = doc.data().ratingSum;
-											const priceCount = doc.data().priceCount;
-											const priceSum = doc.data().priceSum;
+											let newRatings = calculateNewRatings({
+												ratingCount: doc.data().ratingCount,
+												ratingSum: doc.data().ratingSum,
+												rating: doc.data().rating
+											}, review);
+											let newPriceRatings = calculateNewRatings({
+												priceCount: doc.data().priceCount,
+												priceSum: doc.data().priceSum,
+												price: doc.data().price
+											}, review, false, true);
+											// Avoid errors and going negative.
+											newRatings = washRatings(newRatings);
+											newPriceRatings = washRatings(newPriceRatings, true);
+											console.log('newRatings', newRatings);
+											console.log('newPriceRatings', newPriceRatings);
+											console.log('review', review);
 											db.collection('services')
 												.doc(serviceId)
 												.update({
-													ratingCount: (ratingCount || 0) + 1,
-													ratingSum: (ratingSum || 0) + review.rating,
-													rating:
-														(ratingSum + review.rating
-															|| review.rating)
-														/ (ratingCount + 1 || 1),
-													priceCount: (priceCount || 0) + 1,
-													priceSum: (priceSum || 0) + review.price,
-													price:
-														(priceSum + review.price
-															|| review.price)
-														/ (priceCount + 1 || 1)
+													ratingCount: newRatings.ratingCount,
+													ratingSum: newRatings.ratingSum,
+													rating: newRatings.rating,
+													priceCount: newPriceRatings.priceCount,
+													priceSum: newPriceRatings.priceSum,
+													price: newPriceRatings.price
 												})
-												.then(() => res.send(review))
-												.catch((e) => {
-													console.log(e); // Firebase log
-													res.status(422).send(e);
+												.then(() => res.status(200).send(review))
+												.catch((error) => {
+													console.log(error); // Firebase log
+													return res.status(422).send(error);
 												});
 										})
 										.catch((error) => {
-											res.status(422).send({ error });
+											console.log(error); // Firebase log
+											return res.status(422).send(error);
 										});
 								});
 							}
@@ -65,8 +142,9 @@ module.exports = function (req, res) {
 								type: 'warning'
 							});
 						})
-						.catch((e) => {
-							return res.status(422).send({ error: e });
+						.catch((error) => {
+							console.log(error); // Firebase log
+							return res.status(422).send(error);
 						});
 			}
 			/**
@@ -83,38 +161,38 @@ module.exports = function (req, res) {
 							.doc(review.serviceId)
 							.get()
 							.then((doc) => {
-								const ratingCount = doc.data().ratingCount;
-								const ratingSum = doc.data().ratingSum;
-								const priceCount = doc.data().priceCount;
-								const priceSum = doc.data().priceSum;
-								let price;
-								let rating;
-								// Avoid errors and going negative
-								if (ratingCount - 1 <= 0) {
-									rating = 0;
-								} else {
-									rating = ((ratingSum - review.rating) / (ratingCount - 1));
-								}
-								if (priceCount - 1 <= 0) {
-									price = 0;
-								} else {
-									price =	((priceSum - review.price) / (priceCount - 1));
-								}
+								let newRatings = calculateNewRatings({
+									ratingCount: doc.data().ratingCount,
+									ratingSum: doc.data().ratingSum,
+									rating: doc.data().rating
+								}, review, true);
+								let newPriceRatings = calculateNewRatings({
+									priceCount: doc.data().priceCount,
+									priceSum: doc.data().priceSum,
+									price: doc.data().price
+								}, review, true, true);
+								// Avoid errors and going negative.
+								newRatings = washRatings(newRatings);
+								newPriceRatings = washRatings(newPriceRatings, true);
 								return db.collection('services')
 									.doc(review.serviceId)
 									.update({
-										ratingCount: (ratingCount - 1) < 0 ? 0 : (ratingCount - 1),
-										ratingSum: (ratingSum - review.rating) < 0 ? 0 : (ratingSum - review.rating),
-										rating,
-										priceCount: (priceCount - 1) < 0 ? 0 : (priceCount - 1),
-										priceSum: (priceSum - review.price) < 0 ? 0 : (priceSum - review.price),
-										price
+										ratingCount: newRatings.ratingCount,
+										ratingSum: newRatings.ratingSum,
+										rating: newRatings.rating,
+										priceCount: newPriceRatings.priceCount,
+										priceSum: newPriceRatings.priceSum,
+										price: newPriceRatings.price
 									})
-									.then((result) => res.status(422).send(result))
-									.catch((e) => res.status(422).send(e));
+									.then((result) => res.status(200).send(result))
+									.catch((error) => {
+										console.log(error); // Firebase logging
+										return res.status(422).send(error);
+									});
 							})
 							.catch((error) => {
-								res.status(422).send({ error });
+								console.log(error); // Firebase logging
+								return res.status(422).send(error);
 							});
 					});
 			}
