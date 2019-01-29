@@ -18,10 +18,12 @@ module.exports = function (req, res) {
 					.get()
 					.then((doc) => {
 						if (doc.exists) {
-							res.status(200).send(doc.data());
+							const user = doc.data();
+							user.email = null; // Avoid sending user email in response.
+							res.status(200).send(user);
 						} else {
-							// doc.data() will be undefined in this case
-							res.status(200).send('No such document!');
+							// doc.data() will be undefined in this case, send with error status 422.
+							res.status(422).send('Document not found.');
 						}
 					})
 					.catch((e) => {
@@ -32,7 +34,6 @@ module.exports = function (req, res) {
 			/**
 			 * POST requests.
 			 */
-
 			case 'POST': {
 				const FieldValue = admin.firestore.FieldValue;
 				const { user } = req.body;
