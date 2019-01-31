@@ -112,9 +112,6 @@ module.exports = function (req, res) {
 											// Avoid errors and going negative.
 											newRatings = washRatings(newRatings);
 											newPriceRatings = washRatings(newPriceRatings, true);
-											console.log('newRatings', newRatings);
-											console.log('newPriceRatings', newPriceRatings);
-											console.log('review', review);
 											db.collection('services')
 												.doc(serviceId)
 												.update({
