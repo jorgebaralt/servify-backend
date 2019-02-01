@@ -31,14 +31,12 @@ admin.initializeApp({
 });
 
 // Old routes
-
 exports.postService = functions.https.onRequest(postService);
 exports.getServices = functions.https.onRequest(getServices);
 exports.addUserdb = functions.https.onRequest(addUserdb);
 exports.getFavorite = functions.https.onRequest(getFavorite);
 exports.addFavorite = functions.https.onRequest(addFavorite);
 exports.getServicesCount = functions.https.onRequest(getServicesCount);
-
 exports.deleteService = functions.https.onRequest(deleteService);
 exports.updateService = functions.https.onRequest(updateService);
 exports.getNearService = functions.https.onRequest(getNearService);
@@ -47,9 +45,6 @@ exports.getServiceReviews = functions.https.onRequest(getServiceReviews);
 exports.deleteRating = functions.https.onRequest(deleteRating);
 exports.removeFavorite = functions.https.onRequest(removeFavorite);
 exports.getPopularCategories = functions.https.onRequest(getPopularCategories);
-
-// Location ipInfo
-
 // images upload
 exports.uploadFile = functions.https.onRequest(uploadFile);
 exports.profileImageUpload = functions.https.onRequest(profileImageUpload);
