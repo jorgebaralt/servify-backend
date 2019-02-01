@@ -20,7 +20,6 @@ const deleteRating = require('./delete_rating');
 const removeFavorite = require('./remove_favorite');
 const getPopularCategories = require('./get_popular_categories');
 
-const getLocation = require('./get_location');
 const deleteFile = require('./delete_file');
 const uploadFile = require('./upload_file');
 const profileImageUpload = require('./profile_image_upload');
@@ -50,13 +49,12 @@ exports.removeFavorite = functions.https.onRequest(removeFavorite);
 exports.getPopularCategories = functions.https.onRequest(getPopularCategories);
 
 // Location ipInfo
-exports.getLocation = functions.https.onRequest(getLocation);
+
 // images upload
 exports.uploadFile = functions.https.onRequest(uploadFile);
 exports.profileImageUpload = functions.https.onRequest(profileImageUpload);
 // File delete
 exports.deleteFile = functions.https.onRequest(deleteFile);
-
 
 // RESTFUL ROUTES
 const service = require('./service');
@@ -70,7 +68,8 @@ const favorites = require('./favorites');
 const auth = require('./auth');
 const user = require('./user');
 const reviews = require('./reviews');
-
+const categories = require('./categories');
+const getLocation = require('./get_location');
 
 // RESTFUL ROUTES
 exports.service = functions.https.onRequest(service);
@@ -84,3 +83,5 @@ exports.feedback = functions.https.onRequest(feedback);
 exports.favorites = functions.https.onRequest(favorites);
 exports.auth = functions.https.onRequest(auth);
 exports.user = functions.https.onRequest(user);
+exports.categories = functions.https.onRequest(categories);
+exports.getLocation = functions.https.onRequest(getLocation);
