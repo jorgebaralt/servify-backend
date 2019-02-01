@@ -8,7 +8,11 @@ module.exports = function (req, res) {
 			// creating a new categories to db
 			case 'POST': {
 				const { category } = req.body;
-				category.serviceCount = 0;
+
+				if (!category.serviceCount) {
+					category.serviceCount = 0;
+				}
+
 				return db
 					.collection('categories')
 					.doc(category.dbReference)
