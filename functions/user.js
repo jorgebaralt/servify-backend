@@ -83,7 +83,7 @@ module.exports = function (req, res) {
 			 */
 
 			case 'PUT': {
-				const { updatedUser, uid } = req.body;
+				const { updatedUser, uid, bDeletePhotoURL } = req.body;
 				return db
 					.collection('users')
 					.doc(uid)
@@ -91,7 +91,7 @@ module.exports = function (req, res) {
 					.then(() => {
 						if (updatedUser.imageInfo != null) {
 							updatedUser.photoURL = updatedUser.imageInfo.url;
-						} else {
+						} else if (bDeletePhotoURL) {
 							updatedUser.photoURL = null;
 						}
 						delete updatedUser.imageInfo;
