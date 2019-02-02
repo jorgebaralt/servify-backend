@@ -6,14 +6,13 @@ module.exports = function (req, res) {
 		 * POST requests.
 		 */
 		case 'POST': {
+			const newUser = req.body;
+			if (newUser.photoURL == null) {
+				delete newUser.photoURL;
+			}
 			return admin
 				.auth()
-				.createUser({
-					email: req.body.email,
-					password: req.body.password,
-					displayName: req.body.username,
-					photoURL: req.body.photoURL
-				})
+				.createUser(newUser)
 				.then((user) => res.send(user))
 				.catch((error) => {
 					console.log(error);
